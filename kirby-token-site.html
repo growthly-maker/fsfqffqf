@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KirbyOnSol - The Most Adorable Token on Solana</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #0a0a1a;
+            color: #fff;
+            overflow-x: hidden;
+        }
+
+        /* Background avec effet cosmos */
+        .cosmic-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #0a0a1a 0%, #1a0a2e 50%, #16213e 100%);
+            z-index: -2;
+        }
+
+        .stars {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        .star {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 3s infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0; }
+            50% { opacity: 1; }
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            padding: 2rem;
+        }
+
+        #kirby-container {
+            width: 350px;
+            height: 350px;
+            margin-bottom: 2rem;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .kirby-wrapper {
+            width: 300px;
+            height: 300px;
+            position: relative;
+            animation: float 3s ease-in-out infinite;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .kirby-wrapper:hover {
+            transform: scale(1.05);
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .kirby-angry {
+            animation: shake 0.5s ease-in-out infinite !important;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0) rotate(0deg); }
+            25% { transform: translateX(-5px) rotate(-5deg); }
+            75% { transform: translateX(5px) rotate(5deg); }
+        }
+
+        /* Animation de saut */
+        @keyframes jump {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-30px) scale(1.1); }
+        }
+
+        .kirby-jumping {
+            animation: jump 0.5s ease-in-out !important;
+        }
+
+        /* Section Histoire */
+        .story-section {
+            padding: 5rem 2rem;
+            background: rgba(255, 255, 255, 0.02);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .story-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .kirby-frame {
+            position: relative;
+            animation: fadeInLeft 1s ease-out;
+        }
+
+        @keyframes fadeInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .frame-wrapper {
+            position: relative;
+            padding: 20px;
+            background: linear-gradient(135deg, #ff6ec7 0%, #00d4ff 100%);
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(255, 110, 199, 0.3);
+            transform: rotate(-2deg);
+            transition: transform 0.3s ease;
+        }
+
+        .frame-wrapper:hover {
+            transform: rotate(0deg) scale(1.05);
+        }
+
+        .frame-inner {
+            background: #fff;
+            padding: 10px;
+            border-radius: 15px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .frame-image {
+            width: 100%;
+            height: auto;
+            border-radius: 10px;
+            display: block;
+        }
+
+        .sparkles {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+        }
+
+        .sparkle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: #fff;
+            border-radius: 50%;
+            animation: sparkle 2s linear infinite;
+        }
+
+        @keyframes sparkle {
+            0% {
+                opacity: 0;
+                transform: scale(0) rotate(0deg);
+            }
+            50% {
+                opacity: 1;
+                transform: scale(1) rotate(180deg);
+            }
+            100% {
+                opacity: 0;
+                transform: scale(0) rotate(360deg);
+            }
+        }
+
+        .story-content {
+            animation: fadeInRight 1s ease-out 0.3s both;
+        }
+
+        @keyframes fadeInRight {
+            from {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .story-title {
+            font-size: 3rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #ff6ec7 0%, #00d4ff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 2rem;
+            font-family: 'Comic Sans MS', cursive;
+        }
+
+        .story-text {
+            font-size: 1.2rem;
+            line-height: 1.8;
+            color: rgba(255, 255, 255, 0.9);
+            font-family: 'Arial Rounded MT Bold', 'Arial', sans-serif;
+            margin-bottom: 1.5rem;
+        }
+
+        .story-text span {
+            color: #ff6ec7;
+            font-weight: bold;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .story-container {
+                grid-template-columns: 1fr;
+                gap: 3rem;
+            }
+            
+            .story-title {
+                font-size: 2rem;
+            }
+            
+            .frame-wrapper {
+                max-width: 300px;
+                margin: 0 auto;
+            }
+        }
+
+        /* Effet de respiration pour Kirby */
+        @keyframes breathe {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+
+        .kirby-wrapper svg {
+            animation: float 3s ease-in-out infinite, breathe 2s ease-in-out infinite;
+        }
+
+        h1 {
+            font-size: 4rem;
+            font-weight: 900;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #ff6ec7 0%, #00d4ff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: slideIn 1s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-50px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .tagline {
+            font-size: 1.5rem;
+            color: #00d4ff;
+            margin-bottom: 3rem;
+            animation: fadeIn 1s ease-out 0.5s both;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Buttons */
+        .buttons {
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+            justify-content: center;
+            animation: fadeIn 1s ease-out 0.8s both;
+        }
+
+        .btn {
+            padding: 1.2rem 3rem;
+            font-size: 1.2rem;
+            font-weight: 700;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #ff6ec7 0%, #ff4d8f 100%);
+            color: white;
+        }
+
+        .btn-primary::before {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #00d4ff 0%, #0099cc 100%);
+            color: white;
+        }
+
+        .btn-secondary::before {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .btn span {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Features Section */
+        .features {
+            padding: 5rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 3rem;
+            margin-top: 3rem;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            animation: fadeInUp 0.8s ease-out both;
+        }
+
+        .feature-card:nth-child(1) { animation-delay: 0.1s; }
+        .feature-card:nth-child(2) { animation-delay: 0.2s; }
+        .feature-card:nth-child(3) { animation-delay: 0.3s; }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(106, 90, 205, 0.3);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature-title {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #ff6ec7;
+        }
+
+        /* Tokenomics */
+        .tokenomics {
+            padding: 5rem 2rem;
+            text-align: center;
+            background: rgba(106, 90, 205, 0.1);
+        }
+
+        .section-title {
+            font-size: 3rem;
+            margin-bottom: 3rem;
+            background: linear-gradient(135deg, #ff6ec7 0%, #00d4ff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .token-stats {
+            display: flex;
+            justify-content: center;
+            gap: 4rem;
+            flex-wrap: wrap;
+            margin-top: 2rem;
+        }
+
+        .stat {
+            animation: scaleIn 0.6s ease-out both;
+        }
+
+        .stat:nth-child(1) { animation-delay: 0.1s; }
+        .stat:nth-child(2) { animation-delay: 0.2s; }
+        .stat:nth-child(3) { animation-delay: 0.3s; }
+
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: #00d4ff;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        /* Footer */
+        footer {
+            padding: 3rem 2rem;
+            text-align: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .social-link {
+            color: #00d4ff;
+            font-size: 1.5rem;
+            transition: transform 0.3s ease;
+        }
+
+        .social-link:hover {
+            transform: scale(1.2);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+            
+            .tagline {
+                font-size: 1.2rem;
+            }
+            
+            .buttons {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            #kirby-container {
+                width: 300px;
+                height: 300px;
+            }
+        }
+
+        /* Floating elements */
+        .floating-kirby {
+            position: fixed;
+            width: 60px;
+            height: 60px;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="45" fill="%23ffb6c1"/><ellipse cx="35" cy="40" rx="8" ry="12" fill="%23000"/><ellipse cx="65" cy="40" rx="8" ry="12" fill="%23000"/><ellipse cx="37" cy="38" rx="3" ry="4" fill="%23fff"/><ellipse cx="67" cy="38" rx="3" ry="4" fill="%23fff"/><path d="M 35 60 Q 50 70 65 60" fill="none" stroke="%23000" stroke-width="3" stroke-linecap="round"/></svg>') no-repeat center;
+            background-size: contain;
+            opacity: 0.3;
+            animation: floatAround 20s infinite linear;
+            pointer-events: none;
+        }
+
+        @keyframes floatAround {
+            0% {
+                left: -60px;
+                top: 20%;
+                transform: rotate(0deg);
+            }
+            25% {
+                left: 50%;
+                top: 80%;
+                transform: rotate(90deg);
+            }
+            50% {
+                left: 100%;
+                top: 50%;
+                transform: rotate(180deg);
+            }
+            75% {
+                left: 50%;
+                top: 10%;
+                transform: rotate(270deg);
+            }
+            100% {
+                left: -60px;
+                top: 20%;
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="cosmic-bg"></div>
+    <div class="stars" id="stars"></div>
+    <div class="floating-kirby"></div>
+
+    <section class="hero">
+        <div id="kirby-container">
+            <div class="kirby-wrapper" id="kirbyWrapper">
+                <svg width="300" height="300" viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Définitions et gradients -->
+                    <defs>
+                        <radialGradient id="bodyGradient" cx="40%" cy="30%">
+                            <stop offset="0%" style="stop-color:#ffd5e5;stop-opacity:1" />
+                            <stop offset="60%" style="stop-color:#ffb8d1;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#ff9ec7;stop-opacity:1" />
+                        </radialGradient>
+                        <radialGradient id="footGradient" cx="50%" cy="30%">
+                            <stop offset="0%" style="stop-color:#ff6b6b;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#ee5a6f;stop-opacity:1" />
+                        </radialGradient>
+                        <radialGradient id="cheekGradient" cx="50%" cy="50%">
+                            <stop offset="0%" style="stop-color:#ff8fab;stop-opacity:0.8" />
+                            <stop offset="100%" style="stop-color:#ff6b9d;stop-opacity:0.6" />
+                        </radialGradient>
+                        <filter id="softGlow">
+                            <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+                            <feMerge>
+                                <feMergeNode in="coloredBlur"/>
+                                <feMergeNode in="SourceGraphic"/>
+                            </feMerge>
+                        </filter>
+                    </defs>
+
+                    <!-- Ombre douce au sol -->
+                    <ellipse cx="150" cy="255" rx="70" ry="12" fill="#000000" opacity="0.08"/>
+                    
+                    <!-- Pieds -->
+                    <ellipse cx="100" cy="220" rx="45" ry="35" fill="url(#footGradient)" transform="rotate(-8 100 220)"/>
+                    <ellipse cx="200" cy="220" rx="45" ry="35" fill="url(#footGradient)" transform="rotate(8 200 220)"/>
+                    
+                    <!-- Corps principal -->
+                    <circle cx="150" cy="150" r="85" fill="url(#bodyGradient)" id="kirbyBody"/>
+                    
+                    <!-- Reflet lumineux sur le corps (suppression de la bulle) -->
+                    <ellipse cx="120" cy="100" rx="20" ry="15" fill="#ffffff" opacity="0.3" transform="rotate(-20 120 100)"/>
+                    
+                    <!-- Bras stubby -->
+                    <ellipse cx="70" cy="160" rx="30" ry="25" fill="url(#bodyGradient)" transform="rotate(-25 70 160)" class="kirby-arm-left"/>
+                    <ellipse cx="230" cy="160" rx="30" ry="25" fill="url(#bodyGradient)" transform="rotate(25 230 160)" class="kirby-arm-right"/>
+                    
+                    <!-- Joues (plus petites et mieux positionnées) -->
+                    <ellipse cx="90" cy="160" rx="18" ry="14" fill="url(#cheekGradient)" id="leftCheek"/>
+                    <ellipse cx="210" cy="160" rx="18" ry="14" fill="url(#cheekGradient)" id="rightCheek"/>
+                    
+                    <!-- Yeux -->
+                    <g id="normalEyes">
+                        <!-- Oeil gauche -->
+                        <ellipse cx="125" cy="135" rx="11" ry="25" fill="#000000"/>
+                        <ellipse cx="125" cy="140" rx="9" ry="18" fill="#1a237e"/>
+                        <ellipse cx="125" cy="142" rx="8" ry="15" fill="#283593"/>
+                        <ellipse cx="125" cy="144" rx="7" ry="12" fill="#3949ab"/>
+                        <ellipse cx="125" cy="145" rx="6" ry="10" fill="#3f51b5"/>
+                        <ellipse cx="125" cy="146" rx="5" ry="8" fill="#5c6bc0"/>
+                        <!-- Reflets -->
+                        <ellipse cx="128" cy="125" rx="4" ry="6" fill="#ffffff" opacity="0.9"/>
+                        <ellipse cx="123" cy="132" rx="2" ry="3" fill="#ffffff" opacity="0.7"/>
+                        
+                        <!-- Oeil droit -->
+                        <ellipse cx="175" cy="135" rx="11" ry="25" fill="#000000"/>
+                        <ellipse cx="175" cy="140" rx="9" ry="18" fill="#1a237e"/>
+                        <ellipse cx="175" cy="142" rx="8" ry="15" fill="#283593"/>
+                        <ellipse cx="175" cy="144" rx="7" ry="12" fill="#3949ab"/>
+                        <ellipse cx="175" cy="145" rx="6" ry="10" fill="#3f51b5"/>
+                        <ellipse cx="175" cy="146" rx="5" ry="8" fill="#5c6bc0"/>
+                        <!-- Reflets -->
+                        <ellipse cx="178" cy="125" rx="4" ry="6" fill="#ffffff" opacity="0.9"/>
+                        <ellipse cx="173" cy="132" rx="2" ry="3" fill="#ffffff" opacity="0.7"/>
+                    </g>
+                    
+                    <!-- Bouche -->
+                    <path id="normalMouth" d="M 140 175 Q 150 180 160 175" stroke="none" fill="#ce5374" opacity="0.8"/>
+                    <path d="M 140 175 Q 150 178 160 175" stroke="#b83e5a" stroke-width="1" fill="none" opacity="0.6"/>
+                </svg>
+            </div>
+        </div>
+        
+        <h1>KIRBYONSOL</h1>
+        <p class="tagline">The Most Adorable Token on Solana 🌟</p>
+        
+        <div class="buttons">
+            <a href="#" class="btn btn-primary" onclick="alert('Pump.fun link will be added here')">
+                <span>🚀 Buy $KIRBY</span>
+            </a>
+            <a href="#" class="btn btn-secondary" onclick="alert('Twitter link will be added here')">
+                <span>🐦 Join Community</span>
+            </a>
+        </div>
+    </section>
+
+    <section class="features">
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">🌈</div>
+                <h3 class="feature-title">Community Driven</h3>
+                <p>100% community owned. The dev has sold their tokens. This is YOUR Kirby!</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">⚡</div>
+                <h3 class="feature-title">Lightning Fast</h3>
+                <p>Built on Solana for instant transactions and minimal fees. Kirby moves at the speed of light!</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">💎</div>
+                <h3 class="feature-title">Diamond Potential</h3>
+                <p>Join the cutest revolution in crypto. Early supporters become part of Kirby's legendary journey!</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="story-section">
+        <div class="story-container">
+            <div class="kirby-frame">
+                <div class="frame-wrapper">
+                    <div class="frame-inner">
+                        <svg class="frame-image" width="400" height="400" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+                            <!-- Background meadow -->
+                            <rect width="400" height="400" fill="#87CEEB"/>
+                            <ellipse cx="200" cy="380" rx="250" ry="100" fill="#90EE90"/>
+                            
+                            <!-- Flowers -->
+                            <g opacity="0.8">
+                                <circle cx="50" cy="350" r="15" fill="#FFB6C1"/>
+                                <circle cx="120" cy="370" r="12" fill="#FFA07A"/>
+                                <circle cx="280" cy="360" r="14" fill="#DDA0DD"/>
+                                <circle cx="350" cy="340" r="13" fill="#FF69B4"/>
+                            </g>
+                            
+                            <!-- Kirby recreation -->
+                            <g transform="translate(100, 150)">
+                                <!-- Shadow -->
+                                <ellipse cx="100" cy="180" rx="60" ry="10" fill="#000" opacity="0.1"/>
+                                
+                                <!-- Feet -->
+                                <ellipse cx="70" cy="160" rx="35" ry="25" fill="#ff6b6b" transform="rotate(-8 70 160)"/>
+                                <ellipse cx="130" cy="160" rx="35" ry="25" fill="#ff6b6b" transform="rotate(8 130 160)"/>
+                                
+                                <!-- Body -->
+                                <circle cx="100" cy="100" r="70" fill="#ffb8d1"/>
+                                
+                                <!-- Arms -->
+                                <ellipse cx="40" cy="110" rx="25" ry="20" fill="#ffb8d1" transform="rotate(-25 40 110)"/>
+                                <ellipse cx="160" cy="110" rx="25" ry="20" fill="#ffb8d1" transform="rotate(25 160 110)"/>
+                                
+                                <!-- Face -->
+                                <ellipse cx="80" cy="90" rx="8" ry="20" fill="#000"/>
+                                <ellipse cx="80" cy="93" rx="6" ry="15" fill="#3949ab"/>
+                                <ellipse cx="82" cy="85" rx="3" ry="5" fill="#fff"/>
+                                
+                                <ellipse cx="120" cy="90" rx="8" ry="20" fill="#000"/>
+                                <ellipse cx="120" cy="93" rx="6" ry="15" fill="#3949ab"/>
+                                <ellipse cx="122" cy="85" rx="3" ry="5" fill="#fff"/>
+                                
+                                <!-- Cheeks -->
+                                <ellipse cx="60" cy="110" rx="12" ry="10" fill="#ff8fab" opacity="0.7"/>
+                                <ellipse cx="140" cy="110" rx="12" ry="10" fill="#ff8fab" opacity="0.7"/>
+                                
+                                <!-- Mouth -->
+                                <path d="M 90 120 Q 100 125 110 120" stroke="none" fill="#ce5374" opacity="0.8"/>
+                                
+                                <!-- Shine -->
+                                <ellipse cx="85" cy="70" rx="15" ry="12" fill="#fff" opacity="0.3"/>
+                            </g>
+                        </svg>
+                    </div>
+                    <div class="sparkles">
+                        <div class="sparkle" style="top: 10%; left: 10%; animation-delay: 0s;"></div>
+                        <div class="sparkle" style="top: 20%; left: 80%; animation-delay: 0.5s;"></div>
+                        <div class="sparkle" style="top: 80%; left: 20%; animation-delay: 1s;"></div>
+                        <div class="sparkle" style="top: 90%; left: 90%; animation-delay: 1.5s;"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="story-content">
+                <h2 class="story-title">The Story of Kirby 🌟</h2>
+                <p class="story-text">
+                    Born from the stars of <span>Dream Land</span>, Kirby has been spreading joy across the cosmos since 1992. This adorable pink puffball isn't just cute – he's a <span>legendary hero</span> who has saved countless worlds!
+                </p>
+                <p class="story-text">
+                    With his ability to <span>inhale enemies</span> and copy their powers, Kirby transforms every challenge into an opportunity. From battling King Dedede to facing cosmic threats, our pink friend always emerges victorious with a smile!
+                </p>
+                <p class="story-text">
+                    Now, Kirby lands on the <span>Solana blockchain</span>, bringing his infectious optimism to the crypto universe. Join the most wholesome community in DeFi and let's reach for the stars together! 🚀
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2024 KirbyOnSol - Made with 💖 by the Community</p>
+        <div class="social-links">
+            <a href="#" class="social-link" onclick="alert('Twitter link will be added here')">Twitter</a>
+        </div>
+    </footer>
+
+    <script>
+        // Créer des étoiles animées
+        const starsContainer = document.getElementById('stars');
+        for (let i = 0; i < 100; i++) {
+            const star = document.createElement('div');
+            star.className = 'star';
+            star.style.left = Math.random() * 100 + '%';
+            star.style.top = Math.random() * 100 + '%';
+            star.style.animationDelay = Math.random() * 3 + 's';
+            starsContainer.appendChild(star);
+        }
+
+        // Animation des bras
+        const leftArm = document.querySelector('.kirby-arm-left');
+        const rightArm = document.querySelector('.kirby-arm-right');
+        
+        function animateArms() {
+            const time = Date.now() * 0.001;
+            leftArm.setAttribute('transform', `rotate(${-25 + Math.sin(time) * 8} 70 160)`);
+            rightArm.setAttribute('transform', `rotate(${25 - Math.sin(time) * 8} 230 160)`);
+            requestAnimationFrame(animateArms);
+        }
+        animateArms();
+
+        // Animation de clignement des yeux
+        const normalEyes = document.getElementById('normalEyes');
+        
+        function blink() {
+            const allEyes = normalEyes.querySelectorAll('ellipse');
+            
+            // Fermer les yeux
+            allEyes.forEach(eye => {
+                eye.style.transition = 'transform 0.15s ease';
+                eye.style.transform = 'scaleY(0.1)';
+            });
+            
+            // Rouvrir les yeux
+            setTimeout(() => {
+                allEyes.forEach(eye => {
+                    eye.style.transform = 'scaleY(1)';
+                });
+            }, 150);
+            
+            // Prochain clignement aléatoire
+            setTimeout(blink, 3000 + Math.random() * 4000);
+        }
+        
+        // Démarrer le clignement après un délai
+        setTimeout(blink, 2000);
+
+        // Animation smooth scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+
+        // Effet parallax léger
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const hero = document.querySelector('.hero');
+            hero.style.transform = `translateY(${scrolled * 0.5}px)`;
+        });
+    </script>
+</body>
+</html>
