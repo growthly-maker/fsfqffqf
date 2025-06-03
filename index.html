@@ -110,6 +110,113 @@
             animation: jump 0.5s ease-in-out !important;
         }
 
+        /* Contract Address Box */
+        .ca-container {
+            margin: 2rem 0;
+            animation: fadeIn 1s ease-out 0.6s both;
+        }
+
+        .ca-box {
+            background: linear-gradient(135deg, rgba(255, 110, 199, 0.1) 0%, rgba(0, 212, 255, 0.1) 100%);
+            border: 2px solid transparent;
+            border-radius: 20px;
+            padding: 1.5rem 3rem;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 0 30px rgba(255, 110, 199, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .ca-box::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(135deg, #ff6ec7 0%, #00d4ff 50%, #ff6ec7 100%);
+            border-radius: 20px;
+            z-index: -1;
+            opacity: 0.8;
+            animation: borderGlow 3s ease-in-out infinite;
+        }
+
+        @keyframes borderGlow {
+            0%, 100% { opacity: 0.8; }
+            50% { opacity: 1; }
+        }
+
+        .ca-box:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 40px rgba(255, 110, 199, 0.4);
+        }
+
+        .ca-label {
+            font-size: 0.9rem;
+            color: #ffffff;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            text-shadow: 0 0 10px rgba(255, 110, 199, 0.5);
+        }
+
+        .ca-label::before,
+        .ca-label::after {
+            content: '✨';
+            font-size: 1rem;
+        }
+
+        .ca-address {
+            font-size: 1.1rem;
+            font-weight: 900;
+            color: #ffffff;
+            font-family: 'Courier New', monospace;
+            letter-spacing: 1px;
+            position: relative;
+            text-align: center;
+            text-shadow: 0 0 20px rgba(0, 212, 255, 0.8), 0 0 40px rgba(255, 110, 199, 0.6);
+        }
+
+        .ca-sparkles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .ca-sparkle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: #fff;
+            border-radius: 50%;
+            animation: caSparkle 3s linear infinite;
+        }
+
+        @keyframes caSparkle {
+            0% {
+                opacity: 0;
+                transform: translateY(0) scale(0);
+            }
+            50% {
+                opacity: 1;
+                transform: translateY(-20px) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-40px) scale(0);
+            }
+        }
+
         /* Section Histoire */
         .story-section {
             padding: 5rem 2rem;
@@ -257,6 +364,14 @@
             .frame-wrapper {
                 max-width: 300px;
                 margin: 0 auto;
+            }
+
+            .ca-box {
+                padding: 1.2rem 2rem;
+            }
+
+            .ca-address {
+                font-size: 0.9rem;
             }
         }
 
@@ -651,6 +766,21 @@
         
         <h1>KIRBYONSOL</h1>
         <p class="tagline">The Most Adorable Token on Solana 🌟</p>
+        
+        <!-- Contract Address Box -->
+        <div class="ca-container">
+            <div class="ca-box">
+                <div class="ca-label">Contract Address</div>
+                <div class="ca-address">COMING SOON</div>
+                <div class="ca-sparkles">
+                    <div class="ca-sparkle" style="left: 10%; animation-delay: 0s;"></div>
+                    <div class="ca-sparkle" style="left: 30%; animation-delay: 0.5s;"></div>
+                    <div class="ca-sparkle" style="left: 50%; animation-delay: 1s;"></div>
+                    <div class="ca-sparkle" style="left: 70%; animation-delay: 1.5s;"></div>
+                    <div class="ca-sparkle" style="left: 90%; animation-delay: 2s;"></div>
+                </div>
+            </div>
+        </div>
         
         <div class="buttons">
         <a href="https://pump.fun/TON_LIEN_PUMP_FUN" class="btn btn-primary" target="_blank">
